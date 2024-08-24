@@ -25,3 +25,16 @@ Interleave  (almost linear)
 |   16   |      320.369      |      25.816       |  12.41x   |
 |   32   |      320.468      |      25.569       |  12.53x |
 
+
+
+# prog 2
+statistics in myexp -s 10000
+| vector width | total vector instructions | vector utilization(%) | utilized vector lanes | total vector lanes |
+| :----: | :---------------: | :---------------: | :------: | :------: |
+|   2    |      162515      |      87.6      |  248622   | 325030 |
+|   4    |      94571      |     82.3      |  311252   | 378284 |
+|   8    |      51627      |      79.6      |  328624   | 413016 |
+|   16    |      26967     |      78.3      |  337864   | 431472 |
+
+
+When vector width increase, the vector utilization decrease. Because the wider vector width, the larger possibility of divergency, the less utilization. 
