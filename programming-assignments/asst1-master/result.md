@@ -58,3 +58,15 @@ part2
 
 The best count of task is determined by the count of vector register(Not sure).  
 
+# prog4  
+q1  
+serial: 764.246  
+ispc: 147.397  5.18x speedup  
+task ispc:  13.866  55.12x speedup  
+speedup from simd:  5.18x (8x theoretical)  
+speedup from multi-core: 10.64x (16x theoretical)   
+
+q2  
+* values[i] = 2.99f; // maxmize speedup, 7.42x from ispc, 81,71x from task ispc  
+* values[i] = i % 8 == 0 ? 2.99 : 1; // minimize speedup, 0.91x from ispc, 9.89x from task ispc  
+divergence matters.
