@@ -35,8 +35,8 @@ int main() {
         
         // starter code populates array with random input values
         values[i] = .001f + 2.998f * static_cast<float>(rand()) / RAND_MAX;
-        values[i] = 2.99f; // maxmize speedup, 7.42x from ispc, 81,71x from task ispc
-        values[i] = i % 8 == 0 ? 2.99 : 1; // minimize speedup, 0.91x from ispc, 9.89x from task ispc
+        // values[i] = 2.99f; // maxmize speedup, 7.42x from ispc, 81,71x from task ispc
+        // values[i] = i % 8 == 0 ? 2.99 : 1; // minimize speedup, 0.91x from ispc, 9.89x from task ispc
     }
 
     // generate a gold version to check results
