@@ -69,4 +69,16 @@ speedup from multi-core: 10.64x (16x theoretical)
 q2  
 * values[i] = 2.99f; // maxmize speedup, 7.42x from ispc, 81,71x from task ispc  
 * values[i] = i % 8 == 0 ? 2.99 : 1; // minimize speedup, 0.91x from ispc, 9.89x from task ispc  
-divergence matters.
+divergence matters.  
+
+# prog5 
+q1  
+* task ispc gains less than 1x speedup over ispc  
+* reason: memory acess heavily
+
+q2  
+* x, y read, result read, result write
+
+q3
+* no
+
