@@ -38,3 +38,23 @@ statistics in myexp -s 10000
 
 
 When vector width increase, the vector utilization decrease. Because the wider vector width, the larger possibility of divergency, the less utilization. 
+
+
+# prog3
+part1  
+Expected speedup: 8x  
+Actual speedup: 5.85x  
+Reason: Divergence between each lane. Ispc implement: interleaved assignment, block assignment, dynamic assignment(not sure).  
+
+part2  
+| numTasks |  serial | ispc | ispc task |
+| :----: | :---------------: | :---------------: | :------: |
+|   2    |      157.708      |      28.087 (5.61x)      |  14.042 (11.23x)   |
+|   4    |      157.534    |      27.840 (5.66x)      |  11.225 (14.03x)  |
+|   8    |      158.803      |      27.902 (5.69x)      |  7.124 (22.29x)   |
+|   16    |      158.116      |      28.075 (5.63x)     |  4.577 (34.55x)  |
+|   32    |      157.204      |      28.073 (5.60x)     |  2.616 (60.08x)  |
+
+
+The best count of task is determined by the count of vector register(Not sure).  
+

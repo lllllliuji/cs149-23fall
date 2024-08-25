@@ -1,2 +1,3 @@
 *ispc-v1.21.0-linux
 *.o
+**/objs/*
