@@ -1,3 +1,4 @@
 *ispc-v1.21.0-linux
 *.o
 **/objs/*
+**/prog6_kmeans/data.dat

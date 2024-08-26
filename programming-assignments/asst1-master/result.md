@@ -82,3 +82,27 @@ q2
 q3
 * no
 
+
+# prog6
+M = 1000000, N = 100, K = 3, epsilon = 0.100000  
+
+*original performance*: 
+* total time cost: 8966.732ms
+* compute assignement time cost: 6008.493ms
+* compute centroids time cost: 1226.096ms
+* compute cost time cost: 1732.017ms
+
+*solution*  
+* use 16 threads to accelerate the compute of assignment.
+  * total time cost: 5621.722 ms
+  * compute assignement time cost: 2432.166ms  2.47x speedup
+  * compute centroids time cost: 1327.734ms
+  * compute cost time cost: 1861.661ms
+  * total speedup 1.59x
+* vectorized dist(this function is called most frequently). Gain little performance improve, it seems **g++ -O3** will do this job too.
+* change the order of nested-for loop to increase temporal locality
+  * total time cost: 3680.153 ms
+  * compute assignement time cost: 828.059ms
+  * compute centroids time cost: 1160.945ms
+  * compute cost time cost: 1690.947ms
+  * total speedup 2.437x speedup
