@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "CycleTimer.h"
-
+#define THREAD_PER_BLK 512
 // return GB/sec
 float GBPerSec(int bytes, float sec) { return static_cast<float>(bytes) / (1024. * 1024. * 1024.) / sec; }
 
@@ -16,6 +16,15 @@ __global__ void saxpy_kernel(int N, float alpha, float* x, float* y, float* resu
     // calculation is needed so the code only looks at the .x terms of
     // blockDim and threadIdx.
     int index = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // __shared__ float support_x[THREAD_PER_BLK];
+    // __shared__ float support_y[THREAD_PER_BLK];
+
+    // support_x[threadIdx.x] = x[index];
+    // support_y[threadIdx.x] = y[index];
+
+    // __syncthreads();
+    // if (index < N) result[index] = alpha * support_x[threadIdx.x] + support_y[threadIdx.x];
 
     // this check is necessary to make the code work for values of N
     // that are not a multiple of the thread block size (blockDim.x)
