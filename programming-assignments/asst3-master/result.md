@@ -14,13 +14,30 @@
 no idea.
 
 # scan
-naive implement score: 4.4 / 5
+## Exclusive prefix-sum
+### naive implement score: 4.4 / 5
 | Element Count|  Ref Time | Student Time | Score |
 | :----: | :---------------: | :---------------: | :------: |
 |   1000000   |       3.588    |      3.023      | 1.25|
 |   10000000    |       15.501     |      18.571      | 1.25|
 |   20000000    |      27.766    |      35.884     |0.96 |
 |   40000000    |      54.373      |      71.639      |  0.94|  
-low performance cause: there are a number of threads in each threads block have no work to do.
+* low performance cause: there are a number of threads in each threads block that have no work to do.  
+###  wise implement score: 5 / 5
+| Element Count|  Ref Time | Student Time | Score |
+| :----: | :---------------: | :---------------: | :------: |
+|   1000000   |       4.082     |      1.877      | 1.25|
+|   10000000    |       14.287     |      10.349      | 1.25|
+|   20000000    |      26.958     |      19.288     | 1.25 |
+|   40000000    |      52.420       |      34.649     |   1.25|  
+* As the computation proceeds, caculate different grid size and block size for each iteration.
+### Thrust library
+| Element Count|  Ref Time | 
+| :----: | :---------------: |
+|   1000000   |       0.795     | 
+|   10000000    |      1.750    |  
+|   20000000    |      2.041     |   
+|   40000000    |     3.024       |    
+* This library is fast insanely! 
 # render
 ## q1
