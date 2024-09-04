@@ -6,4 +6,5 @@ Device 0: NVIDIA GeForce RTX 2060
    CUDA Cap:   7.5
 ---------------------------------------------------------
 Array size: 20000000
-Student GPU time: 0.001 ms
+Student GPU time: 30.838 ms
+Find_repeats outputs are correct!

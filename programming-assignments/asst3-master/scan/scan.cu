@@ -171,7 +171,19 @@ double cudaScanThrust(int* inarray, int* end, int* resultarray) {
     double overallDuration = endTime - startTime;
     return overallDuration;
 }
+__global__ void mark(int* input, int N, int* output) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index < N - 1) {
+        output[index] = input[index] == input[index + 1];
+    }
+}
 
+__global__ void save(int* prefix_sum, int N, int* output) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index < N - 1 && prefix_sum[index + 1] > prefix_sum[index]) {
+        output[prefix_sum[index]] = index;
+    }
+}
 // find_repeats --
 //
 // Given an array of integers `device_input`, returns an array of all
@@ -190,8 +202,26 @@ int find_repeats(int* device_input, int length, int* device_output) {
     // exclusive_scan function with them. However, your implementation
     // must ensure that the results of find_repeats are correct given
     // the actual array length.
+    int* prefix_sum;
+    cudaMalloc((void**)&prefix_sum, nextPow2(length) * sizeof(int));
 
-    return 0;
+    int grid_size = length <= THREADS_PER_BLOCK ? 1 : (length + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
+    int block_size = length <= THREADS_PER_BLOCK ? length : THREADS_PER_BLOCK;
+    // 1. mark the repeat indice
+    mark<<<grid_size, block_size>>>(device_input, length, prefix_sum);
+
+    cudaDeviceSynchronize();
+
+    // 2. caculate the repeated indice's offset in output
+    exclusive_scan(device_input, length, prefix_sum);
+
+    // 3. save repeat indice to output
+    save<<<grid_size, block_size>>>(prefix_sum, length, device_output);
+
+    // 4. return the count of repeat indice
+    int count = 0;
+    cudaMemcpy(&count, prefix_sum + length - 1, sizeof(int), cudaMemcpyDeviceToHost);
+    return count;
 }
 
 //
