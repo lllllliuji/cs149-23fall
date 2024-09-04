@@ -27,6 +27,40 @@ static inline int nextPow2(int n) {
     return n;
 }
 
+// CUDA kernel for the up-sweep phase
+__global__ void upsweep(int *data, int N, int step) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = step * 2;
+
+    // Only process elements within bounds
+
+    if (index < N / stride) {
+        int ai = stride * index + stride - 1;  // Index of the current element
+        int bi = ai - step;  // Index of the element to add
+
+        if (ai < N) {  // Ensure indices are within bounds
+            data[ai] += data[bi];  // Perform the reduction
+        }
+    }
+}
+
+// CUDA kernel for the down-sweep phase
+__global__ void downsweep(int *data, int N, int step) {
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = step * 2;
+
+    // Only process elements within bounds
+    if (index < N / stride) {
+        int ai = stride * index + stride - 1;  // Index of the current element
+        int bi = ai - step;  // Index of the element to swap
+
+        if (ai < N) {  // Ensure indices are within bounds
+            int t = data[bi];  // Save the value
+            data[bi] = data[ai];  // Assign upper element to lower
+            data[ai] += t;  // Update the upper element
+        }
+    }
+}
 // exclusive_scan --
 //
 // Implementation of an exclusive scan on global memory array `input`,
@@ -54,6 +88,26 @@ void exclusive_scan(int* input, int N, int* result)
     // to CUDA kernel functions (that you must write) to implement the
     // scan.
 
+
+    // Allocate memory for block size
+    int blockSize = 256;
+    int gridSize = (N + blockSize - 1) / blockSize;
+    int rounded_length = nextPow2(N);
+
+    // Up-sweep phase
+    for (int step = 1; step < rounded_length; step *= 2) {
+        upsweep<<<gridSize, blockSize>>>(result, rounded_length, step);
+        cudaDeviceSynchronize();  // Synchronize after each kernel launch
+    }
+
+    // Set the last element to 0 for exclusive scan
+    cudaMemset(result + rounded_length - 1, 0, sizeof(int));
+
+    // Down-sweep phase
+    for (int step = rounded_length / 2; step >= 1; step /= 2) {
+        downsweep<<<gridSize, blockSize>>>(result, rounded_length, step);
+        cudaDeviceSynchronize();  // Synchronize after each kernel launch
+    }
 
 }
 

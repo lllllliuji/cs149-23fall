@@ -165,7 +165,22 @@ int main(int argc, char** argv) {
         } else {    
             printf("Student GPU time: %.3f ms\n", 1000.f * cudaTime);
         } 
-
+        // printf("\n========== input array =========\n");
+        // for (int i = 0; i < N; i++) {
+        //     if (i % 8 == 0) printf("\n");
+        //     printf("%d ", inarray[i]);
+        // }
+        // printf("\n========== result array =========\n");
+        // for (int i = 0; i < N; i++) {
+        //     if (i % 8 == 0) printf("\n");
+        //     printf("%d ", resultarray[i]);
+            
+        // }
+        // printf("\n========== check array =========\n");
+        // for (int i = 0; i < N; i++) {
+        //     if (i % 8 == 0) printf("\n");
+        //     printf("%d ", checkarray[i]);
+        // }
         // validate results
         for (int i = 0; i < N; i++) {
             if (checkarray[i] != resultarray[i]) {
