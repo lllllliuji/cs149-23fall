@@ -5,6 +5,5 @@ Device 0: NVIDIA GeForce RTX 2060
    Global mem: 6144 MB
    CUDA Cap:   7.5
 ---------------------------------------------------------
-Array size: 20000000
-Student GPU time: 26.958 ms
-Scan outputs are correct!
+Array size: 10000000
+Student GPU time: 0.002 ms
