@@ -1,0 +1,24 @@
+Rendering to 1024x1024 image
+Loaded scene with 100000 circles
+Loaded scene with 100000 circles
+---------------------------------------------------------
+Initializing CUDA for CudaRenderer
+Found 1 CUDA devices
+Device 0: NVIDIA GeForce RTX 2060
+   SMs:        30
+   Global mem: 6144 MB
+   CUDA Cap:   7.5
+---------------------------------------------------------
+
+Running benchmark, 1 frames, beginning at frame 0 ...
+Dumping frames to output_xxx.ppm
+Copying image data from device
+Wrote image file output_0000.ppm
+Copying image data from device
+Mismatch detected at pixel [0][0], value = 0.677522, expected 0.842340 for color Red
+Mismatch detected at pixel [0][0], value = 0.443892, expected 0.597569 for color Green
+Mismatch detected at pixel [0][1], value = 0.677522, expected 0.842340 for color Red
+Mismatch detected at pixel [0][1], value = 0.443892, expected 0.597569 for color Green
+Mismatch detected at pixel [0][2], value = 0.672081, expected 0.842340 for color Red
+Mismatch detected at pixel [0][2], value = 0.425823, expected 0.597569 for color Green
+ERROR : Mismatch detected between reference and actual

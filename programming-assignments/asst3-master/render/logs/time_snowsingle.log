@@ -1,0 +1,31 @@
+Rendering to 1024x1024 image
+Loaded data for 100000 circles from snow.par
+Loaded scene with 100000 circles
+---------------------------------------------------------
+Initializing CUDA for CudaRenderer
+Found 1 CUDA devices
+Device 0: NVIDIA GeForce RTX 2060
+   SMs:        30
+   Global mem: 6144 MB
+   CUDA Cap:   7.5
+---------------------------------------------------------
+WARNING: You're not running on a fast GPU, please consider using NVIDIA GTX 480, 670 or 780.
+---------------------------------------------------------
+
+Running benchmark, 4 frames, beginning at frame 0 ...
+Dumping frames to output_xxx.ppm
+Copying image data from device
+Wrote image file output_0000.ppm
+Copying image data from device
+Wrote image file output_0001.ppm
+Copying image data from device
+Wrote image file output_0002.ppm
+Copying image data from device
+Wrote image file output_0003.ppm
+Clear:    0.3019 ms
+Advance:  0.0029 ms
+Render:   33.9177 ms
+Total:    34.2225 ms
+File IO:  43.5191 ms
+
+Overall:  0.3110 sec (note units are seconds)

@@ -1,0 +1,25 @@
+Rendering to 1024x1024 image
+Loaded scene with 3 circles
+Loaded scene with 3 circles
+---------------------------------------------------------
+Initializing CUDA for CudaRenderer
+Found 1 CUDA devices
+Device 0: NVIDIA GeForce RTX 2060
+   SMs:        30
+   Global mem: 6144 MB
+   CUDA Cap:   7.5
+---------------------------------------------------------
+
+Running benchmark, 1 frames, beginning at frame 0 ...
+Dumping frames to output_xxx.ppm
+Copying image data from device
+Wrote image file output_0000.ppm
+Copying image data from device
+***************** Correctness check passed **************************
+Clear:    0.3138 ms
+Advance:  0.0006 ms
+Render:   0.5723 ms
+Total:    0.8867 ms
+File IO:  44.8872 ms
+
+Overall:  0.0623 sec (note units are seconds)

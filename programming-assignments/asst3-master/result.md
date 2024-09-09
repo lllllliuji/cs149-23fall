@@ -47,5 +47,11 @@ no idea.
 |   20000000    |      45.370      |      30.838    | 1.25 |
 |   40000000    |      84.620        |      49.283     |   1.25|  
 
-# 3 render
-## q1
+# 3. render
+## 3.1 The Original Implement
+The original implement launches a cuda thread for each circle to render the image but do no synchronization on pixel's update, violating the rule that each circle must be rendered in order.  
+This implement could pass the correctness test occasionally due to concurrency.
+## 3.2 My Implement
+### 3.2.1 Exploit the parallism across each pixel
+
+### 3.2.2 Exploit the parallism across each circle
