@@ -159,15 +159,24 @@ torch::Tensor myNaiveAttention(torch::Tensor QTensor, torch::Tensor KTensor, tor
 
             // 3. O = P * V (N, N) * (N, d)
             for (int i = 0; i < N; i++) {
-                for (int k = 0; k < N; k++) {
-                    float p = twoDimRead(QK_t, i, k, N);
-                    for (int j = 0; j < d; j++) {
-                        float v = fourDimRead(V, b, h, k, j, H, N, d);
-                        v *= p;
-                        fourDimAdd(O, b, h, i, j, H, N, d, v);
+                for (int j = 0; j < d; j++) {
+                    float sum = 0.f;
+                    for (int k = 0; k < N; k++) {
+                        sum += twoDimRead(QK_t, i, k, N) * fourDimRead(V, b, h, k, j, H, N, d);
                     }
+                    fourDimWrite(O, b, h, i, j, H, N, d, sum);
                 }
             }
+            // for (int i = 0; i < N; i++) {
+            //     for (int k = 0; k < N; k++) {
+            //         float p = twoDimRead(QK_t, i, k, N);
+            //         for (int j = 0; j < d; j++) {
+            //             float v = fourDimRead(V, b, h, k, j, H, N, d);
+            //             v *= p;
+            //             fourDimAdd(O, b, h, i, j, H, N, d, v);
+            //         }
+            //     }
+            // }
         }
     }
     // DO NOT EDIT THIS RETURN STATEMENT //
@@ -197,7 +206,60 @@ torch::Tensor myUnfusedAttentionBlocked(torch::Tensor QTensor, torch::Tensor KTe
     std::vector<float> QK_t = formatTensor(QK_tTensor);
 
     // -------- YOUR CODE HERE  -------- //
+    for (int b = 0; b < B; b++) {
+        for (int h = 0; h < H; h++) {
+            // 1. Q * K_transpose (N, d) * (d, N)
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    float sum = 0.f;
+                    for (int k = 0; k < d; k++) {
+                        sum += fourDimRead(Q, b, h, i, k, H, N, d) * fourDimRead(K, b, h, j, k, H, N, d);
+                    }
+                    twoDimWrite(QK_t, i, j, N, sum);
+                }
+            }
+            // 2. P = softmax(QK_t) (N, N)
+            for (int i = 0; i < N; i++) {
+                float denominator = 0.f;
+                float nominator = 0.f;
+                for (int j = 0; j < N; j++) {
+                    nominator = exp(twoDimRead(QK_t, i, j, N));
+                    denominator += nominator;
+                    twoDimWrite(QK_t, i, j, N, nominator);
+                }
+                for (int j = N - 1; j >= 0; j--) {
+                    float val = twoDimRead(QK_t, i, j, N) / denominator;
+                    twoDimWrite(QK_t, i, j, N, val);
+                }
+            }
 
+            // 3. O = P * V (N, N) * (N, d)
+            for (int i = 0; i < N; i++) {
+                for (int k = 0; k < N; k++) {
+                    float p = twoDimRead(QK_t, i, k, N);
+                    for (int j = 0; j < d; j++) {
+                        float v = fourDimRead(V, b, h, k, j, H, N, d);
+                        v *= p;
+                        fourDimAdd(O, b, h, i, j, H, N, d, v);
+                    }
+                }
+            }
+            // const int bsize = 32;
+            // for (int kk = 0; kk < N; kk += bsize) {
+            //     for (int jj = 0; jj < d; jj += bsize) {
+            //         for (int i = 0; i < N; i++) {
+            //             for (int j = jj; j < std::min(jj + bsize, d); j++) {
+            //                 float sum = 0.f;
+            //                 for (int k = kk; k < std::min(kk + bsize, N); k++) {
+            //                     sum += twoDimRead(QK_t, i, k, N) * fourDimRead(V, b, h, k, j, H, N, d);
+            //                 }
+            //                 fourDimAdd(O, b, h, i, j, H, N, d, sum);
+            //             }
+            //         }
+            //     }
+            // }
+        }
+    }
     // DO NOT EDIT THIS RETURN STATEMENT //
     // It formats your C++ Vector O back into a Tensor of Shape (B, H, N, d) and returns it //
     return torch::from_blob(O.data(), {B, H, N, d}, torch::TensorOptions().dtype(torch::kFloat32)).clone();
