@@ -288,9 +288,10 @@ torch::Tensor myFusedAttention(torch::Tensor QTensor, torch::Tensor KTensor, tor
     //  You can simply access this as ORow[i]
     std::vector<float> ORow = formatTensor(ORowTensor);
 
-    // -------- YOUR CODE HERE  -------- //
-    // We give you a template of the first three loops for your convenience
-    // loop over batch
+// -------- YOUR CODE HERE  -------- //
+// We give you a template of the first three loops for your convenience
+// loop over batch
+#pragma omp parallel for collapse(3)
     for (int b = 0; b < B; b++) {
         // loop over heads
         for (int h = 0; h < H; h++) {
@@ -300,6 +301,33 @@ torch::Tensor myFusedAttention(torch::Tensor QTensor, torch::Tensor KTensor, tor
                     temp.index({torch::indexing::Slice(omp_get_thread_num(), torch::indexing::None)});
                 std::vector<float> ORow = formatTensor(ORowTensor);
                 // YOUR CODE HERE
+                // 1. Q * K_transpose
+                for (int j = 0; j < N; j++) {
+                    float sum = 0.f;
+                    for (int k = 0; k < d; k++) {
+                        sum += fourDimRead(Q, b, h, i, k, H, N, d) * fourDimRead(K, b, h, j, k, H, N, d);
+                    }
+                    ORow[j] = sum;
+                }
+
+                // 2. softmax ORow = softmax(ORow)
+                float denominator = 0.f;
+                float nominator = 0.f;
+                for (int j = 0; j < N; j++) {
+                    nominator = exp(ORow[j]);
+                    denominator += nominator;
+                    ORow[j] = nominator;
+                }
+
+                // 3. ORow * V
+                for (int k = 0; k < N; k++) {
+                    ORow[k] /= denominator;
+                    for (int j = 0; j < d; j++) {
+                        float v = fourDimRead(V, b, h, k, j, H, N, d);
+                        v *= ORow[k];
+                        fourDimAdd(O, b, h, i, j, H, N, d, v);
+                    }
+                }
             }
         }
     }
